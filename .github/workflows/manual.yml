@@ -32,7 +32,7 @@ jobs:
       - name: copy file via ssh password
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ inputs.server }} 
+          host: ${{ secrets.TAILSCALE_SSH_SERVER }}
           username: ${{ secrets.TAILSCALE_SSH_USER }}
           key: ${{ secrets.TAILSCALE_SSH_KEY }}
           port: ${{ secrets.TAILSCALE_SSH_SERVER_PORT }}
