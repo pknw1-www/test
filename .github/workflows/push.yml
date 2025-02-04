@@ -1,0 +1,43 @@
+name: push
+
+on:
+  push:
+    branches:
+      - '*'         # matches every branch that doesn't contain a '/'
+      - '*/*'       # matches every branch containing a single '/'
+      - '**'        # matches every branch
+      - '!main'
+
+
+jobs:
+  docker_build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get repository name
+        id: repo-name
+        uses: MariachiBear/get-repo-name-action@v1.1.0
+        with:
+          with-owner: 'false'
+          string-case: 'lowercase'
+      - name: Build compose
+        run: |
+          sed -i 's/REPO_NAME/${{ steps.repo-name.outputs.repository-name }}/g' docker-compose.yml
+          sed -i 's/latest/dev/g' docker-compose.yml
+          sed -i 's/-ENV/-dev/g' docker-compose.yml
+          sed -i 's/display: flex/display: none/g' publish/*html
+      - name: Build and push Docker Dev
+        run: |
+          TIMESTAMP=$(date +%s)
+          echo ${TIMESTAMP} > publish/version.html
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:${TIMESTAMP} .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:dev .
+          docker save --output="${{ steps.repo-name.outputs.repository-name }}.tar" ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:dev
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docker-compose
+          path: docker-compose.yml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.repo-name.outputs.repository-name }}
+          path: ${{ steps.repo-name.outputs.repository-name }}.tar
