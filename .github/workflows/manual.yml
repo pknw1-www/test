@@ -17,35 +17,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get repository name
-        id: repo-name
-        uses: MariachiBear/get-repo-name-action@v1.1.0
-        with:
-          with-owner: 'false'
-          string-case: 'lowercase'
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build compose
+      - name: Set up SSH key
         run: |
-          sed -i 's/REPO_NAME/${{ steps.repo-name.outputs.repository-name }}/g' docker-compose.yml
-          sed -i 's/-ENV/${{ inputs.build_version }}/g' docker-compose.yml
-          sed -i 's/display: flex/display: none/g' publish/*html
-      - name: Build and push Docker images
-        run: |
-          TIMESTAMP=$(date +%s)
-          echo ${TIMESTAMP} > publish/version.html
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:${TIMESTAMP} .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:${TIMESTAMP}
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:${{ inputs.build_version }} .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo-name.outputs.repository-name }}:${{ inputs.build_version }}
-      - uses: actions/upload-artifact@v4
+          env
+          mkdir -p ~/.ssh
+          echo "${{ secrets.TAILSCALE_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@v0.1.7
         with:
-          name: docker-compose
-          path: docker-compose.yml
-      - uses: actions/upload-artifact@v4
+          host: ${{ inputs.server }} 
+          username: ${{ secrets.TAILSCALE_SSH_USER }}
+          key: ${{ secrets.TAILSCALE_SSH_KEY }}
+          port: ${{ secrets.TAILSCALE_SSH_SERVER_PORT }}
+          source: "*"
+          target: "/tmp/tailscale"
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.2.0
         with:
-          name: export
-          path: export
+          host: ${{ secrets.TAILSCALE_SSH_SERVER }}
+          username:  ${{ secrets.TAILSCALE_SSH_USER }}
+          key: ${{ secrets.TAILSCALE_SSH_KEY }}
+          port: ${{ secrets.TAILSCALE_SSH_SERVER_PORT }}
+          script: cd /tmp/tailscale && ls -l
