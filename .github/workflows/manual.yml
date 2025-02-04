@@ -29,6 +29,15 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.TAILSCALE_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ inputs.server }} 
+          username: ${{ secrets.TAILSCALE_SSH_USER }}
+          key: ${{ secrets.TAILSCALE_SSH_KEY }}
+          port: ${{ secrets.TAILSCALE_SSH_SERVER_PORT }}
+          source: "*"
+          target: "/tmp/tailscale"
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.2.0
         with:
