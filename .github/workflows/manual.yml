@@ -32,10 +32,20 @@ jobs:
           echo "${{ secrets.TAILSCALE_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
       - name: executing remote ssh commands using password
+        if: ${{ vars.GLOBAL_TEST2 != '' }}
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.TAILSCALE_SSH_SERVER }}
           username:  ${{ secrets.TAILSCALE_SSH_USER }}
           key: ${{ secrets.TAILSCALE_SSH_KEY }}
           port: ${{ secrets.TAILSCALE_SSH_SERVER_PORT }}
-          script: mkdir /tmp/pknw1/${{ vars.GLOBAL_TEST }}
+          script: mkdir /tmp/pknw1/notset
+      - name: executing remote ssh commands using password
+        if: ${{ vars.GLOBAL_TEST2 === '' }}
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.TAILSCALE_SSH_SERVER }}
+          username:  ${{ secrets.TAILSCALE_SSH_USER }}
+          key: ${{ secrets.TAILSCALE_SSH_KEY }}
+          port: ${{ secrets.TAILSCALE_SSH_SERVER_PORT }}
+          script: mkdir /tmp/pknw1/equals
