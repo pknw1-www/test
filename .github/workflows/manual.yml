@@ -39,4 +39,4 @@ jobs:
           username:  ${{ secrets.TAILSCALE_SSH_USER }}
           key: ${{ secrets.TAILSCALE_SSH_KEY }}
           port: ${{ secrets.TAILSCALE_SSH_SERVER_PORT }}
-          script: mkdir /tmp/${{ vars.SERVICE }}
+          script: mkdir /tmp/${{ vars.GLOBAL_TEST }}
