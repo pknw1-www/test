@@ -27,4 +27,4 @@ jobs:
           EOF
           )
           echo "::set-output name=content::$SUMMARY_HEADER"
-          echo "$SUMMARY_HEADER" >> >> $GITHUB_STEP_SUMMARY
+          echo "$SUMMARY_HEADER" >> $GITHUB_STEP_SUMMARY
