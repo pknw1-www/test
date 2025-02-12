@@ -19,33 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Tailscale
-        uses: tailscale/github-action@v3
-        with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:ovh
-      - name: Set up SSH key
-        run: |
-          env
-          mkdir -p ~/.ssh
-          echo "${{ secrets.TAILSCALE_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-      - name: executing remote ssh commands using password
-        if: ${{ vars.GLOBAL_TEST2 != '' }}
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.TAILSCALE_SSH_SERVER }}
-          username:  ${{ secrets.TAILSCALE_SSH_USER }}
-          key: ${{ secrets.TAILSCALE_SSH_KEY }}
-          port: ${{ secrets.TAILSCALE_SSH_SERVER_PORT }}
-          script: mkdir /tmp/pknw1/notset
-      - name: executing remote ssh commands using password
-        if: ${{ vars.GLOBAL_TEST2 == '' }}
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.TAILSCALE_SSH_SERVER }}
-          username:  ${{ secrets.TAILSCALE_SSH_USER }}
-          key: ${{ secrets.TAILSCALE_SSH_KEY }}
-          port: ${{ secrets.TAILSCALE_SSH_SERVER_PORT }}
-          script: mkdir /tmp/pknw1/equals
+          SUMMARY_HEADER=$(cat << EOF
+          first line
+          second line
+          third line
+          EOF
+          )
+          echo "::set-output name=content::$SUMMARY_HEADER"
