@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: |
           SUMMARY_HEADER=$(cat << EOF
           first line
           second line
