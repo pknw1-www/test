@@ -23,7 +23,7 @@ jobs:
           echo "![](https://www.pknw1.co.uk/assets/img/pknw1logo-white.png)"  >> $GITHUB_STEP_SUMMARY
           echo "${{ github.fullName }} " >> $GITHUB_STEP_SUMMARY
           TIMESTAMP=$(date)
-          CONMPOSE=$(cat deploy/docker-compose.yml)
+          CONMPOSE=$(cat docker-compose.yml)
           echo ${TIMESTAMP} >> $GITHUB_STEP_SUMMARY
           echo "started at "${TIMESTAMP}  >> $GITHUB_STEP_SUMMARY
           echo " - [X] update docker-compose.yml"  >> $GITHUB_STEP_SUMMARY
