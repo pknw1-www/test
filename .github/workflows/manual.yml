@@ -25,5 +25,5 @@ jobs:
           TIMESTAMP=$(date +%s)
           echo ${TIMESTAMP} >> $GITHUB_STEP_SUMMARY
           echo " - [X] update docker-compose.yml"  >> $GITHUB_STEP_SUMMARY
-          echo " - [X] image  ${{ build_version }} " >> $GITHUB_STEP_SUMMARY
-          echo " - [X] image  ${{ build_version }} " >> $GITHUB_STEP_SUMMARY
+          echo " - [X] image  ${{ inputs.build_version }} " >> $GITHUB_STEP_SUMMARY
+          echo " - [X] image  ${{ inputs.build_version }} " >> $GITHUB_STEP_SUMMARY
