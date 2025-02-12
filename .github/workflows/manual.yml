@@ -20,6 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          echo "![](https://www.pknw1.co.uk/assets/img/pknw1logo-white.png)"  >> $GITHUB_STEP_SUMMARY
+          echo "![](https://www.pknw1.co.uk/assets/img/pknw1logo-white.png =100xx70)"  >> $GITHUB_STEP_SUMMARY
           echo "::set-output name=content::$SUMMARY_HEADER"
           echo "$SUMMARY_HEADER" >> $GITHUB_STEP_SUMMARY
