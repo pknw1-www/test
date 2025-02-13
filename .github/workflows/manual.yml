@@ -12,6 +12,10 @@ on:
         default: 'latest'
       environment:
         default: 'prod'
+      docker_registry:
+        description: 'Use docker hub to push images'
+        default: true
+        type: boolean
 
 
 jobs:
